@@ -18,6 +18,8 @@ namespace app
 		
 
 		static Meteor bigMeteor[maxBigMeteors];
+
+		static Meteor floorMeteors[maxBigMeteors];
 	
 		static int destroyedMeteorsCount;
 		static float meteorSpeed;
@@ -41,6 +43,53 @@ namespace app
 
 		static bool init;
 		static int scaleAux = 1600;
+		static void initFloorMeteors();
+		static void updateFloorMeteors();
+		static const float floorMeteorsDistance = 400.0f;
+
+		void initFloorMeteors()
+		{
+			floorMeteors[0].position = { (float)GetScreenWidth() / 6 * 4, (float)GetScreenHeight() / 6 * 5 };
+			for (int i = 0; i < maxBigMeteors; i++)
+			{
+				floorMeteors[i].active = true;
+				floorMeteors[i].radius = 50.0f;
+				floorMeteors[i].color = RED;
+				floorMeteors[i].speed = { 100.0f,0.0f };
+				if (i != 0)
+				{
+					floorMeteors[i].position = { floorMeteors[i-1].position.x + floorMeteorsDistance,(float)GetScreenHeight() / 6 * 5 };
+				}
+				floorMeteors[i].tag = i;
+			}
+			
+		}
+
+		void updateFloorMeteors()
+		{
+			for (int i = 0; i < maxBigMeteors; i++)
+			{
+				if (floorMeteors[i].active)
+				{
+					floorMeteors[i].position.x -= floorMeteors[i].speed.x*GetFrameTime();
+					if (floorMeteors[i].position.x < -floorMeteors[i].radius * 2)
+					{
+						floorMeteors[i].position.x = floorMeteors[floorMeteors[5].tag].position.x + floorMeteorsDistance;
+						for (int i = 0; i < maxBigMeteors; i++)
+						{
+							if (floorMeteors[i].tag != 0)
+							{
+								floorMeteors[i].tag--;
+							}
+							else
+							{
+								floorMeteors[i].tag = 5;
+							}
+						}
+					}
+				}
+			}
+		}
 
 		void InitMeteors()
 		{
@@ -84,6 +133,7 @@ namespace app
 
 			bigMeteorScale = (GetScreenWidth()* 0.25f) / scaleAux;
 			bigMeteorScalePos = { (bigMeteorScale*meteorImage.width) / 2 ,(bigMeteorScale*meteorImage.height) / 2 };
+			initFloorMeteors();
 		}
 
 		void UpdateMeteors()
@@ -165,6 +215,8 @@ namespace app
 				gameOver = true;
 				currentScreen = GameOver;
 			}
+
+			updateFloorMeteors();
 		}
 
 		void DrawMeteors()
@@ -177,6 +229,11 @@ namespace app
 					DrawTextureEx(meteorTexture, { bigMeteor[i].position.x - bigMeteorScalePos.x,bigMeteor[i].position.y - bigMeteorScalePos.y }, 0, bigMeteorScale, WHITE);
 				}
 				else DrawCircleV(bigMeteor[i].position, bigMeteor[i].radius, BLANK);
+
+				if (floorMeteors[i].active)
+				{
+					DrawCircleV(floorMeteors[i].position, floorMeteors[i].radius, floorMeteors[i].color);
+				}
 			}
 		}
 
@@ -224,6 +281,7 @@ namespace app
 
 			bigMeteorScale = (GetScreenWidth()* 0.25f) / scaleAux;
 			bigMeteorScalePos = { (bigMeteorScale*meteorImage.width) / 2 ,(bigMeteorScale*meteorImage.height) / 2 };
+			initFloorMeteors();
 		}
 	}
 }

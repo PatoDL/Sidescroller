@@ -3,6 +3,7 @@
 ## [unreleased] 2018-10-30
 ### Added
 - se agregaron las bombas como forma de ataque
+- se agregaron nuevos enemigos
 
 ## [1.0] 2018-10-29
 ### Added

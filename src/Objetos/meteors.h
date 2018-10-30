@@ -14,6 +14,7 @@ namespace app
 			float radius;
 			bool active;
 			Color color;
+			int tag;
 		};
 
 		void InitMeteors();
