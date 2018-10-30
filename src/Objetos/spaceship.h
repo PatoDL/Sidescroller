@@ -33,6 +33,17 @@ namespace app
 			Color color;
 		};
 		
+		struct Bomb
+		{
+			Vector2 position;
+			Vector2 speed;
+			float radius;
+			float rotation;
+			bool active;
+			Color color;
+			int tag;
+		};
+
 		extern Spaceship ship;
 		extern const int shipMaxShoots;
 		extern Shoot shoot[];
