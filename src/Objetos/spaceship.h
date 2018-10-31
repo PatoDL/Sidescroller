@@ -44,8 +44,10 @@ namespace app
 			int tag;
 		};
 
+		extern Bomb bombs[];
 		extern Spaceship ship;
 		extern const int shipMaxShoots;
+		extern const int shipMaxBombs;
 		extern Shoot shoot[];
 		extern bool pauseSoundShoot;
 	}

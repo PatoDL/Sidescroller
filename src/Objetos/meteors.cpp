@@ -65,6 +65,35 @@ namespace app
 			
 		}
 
+		static int lastMeteorX;
+
+		static void checkFloorMeteorsCol()
+		{
+			for (int i = 0; i < shipMaxBombs; i++)
+			{
+				for (int j = 0; j < maxBigMeteors; j++)
+				{
+					if (CheckCollisionCircles(bombs[i].position, bombs[i].radius, floorMeteors[j].position, floorMeteors[j].radius))
+					{
+						floorMeteors[j].active = false;
+						bombs[i].active = false;
+					}
+				}
+			}
+		}
+
+		static void checkLastMeteor()
+		{
+			lastMeteorX = 0;
+			for (int k = 0; k < maxBigMeteors; k++)
+			{
+				if (floorMeteors[k].position.x > lastMeteorX)
+				{
+					lastMeteorX = floorMeteors[k].position.x;
+				}
+			}
+		}
+
 		void updateFloorMeteors()
 		{
 			for (int i = 0; i < maxBigMeteors; i++)
@@ -74,21 +103,12 @@ namespace app
 					floorMeteors[i].position.x -= floorMeteors[i].speed.x*GetFrameTime();
 					if (floorMeteors[i].position.x < -floorMeteors[i].radius * 2)
 					{
-						floorMeteors[i].position.x = floorMeteors[floorMeteors[5].tag].position.x + floorMeteorsDistance;
-						for (int i = 0; i < maxBigMeteors; i++)
-						{
-							if (floorMeteors[i].tag != 0)
-							{
-								floorMeteors[i].tag--;
-							}
-							else
-							{
-								floorMeteors[i].tag = 5;
-							}
-						}
+						checkLastMeteor();
+						floorMeteors[i].position.x = lastMeteorX + floorMeteorsDistance;
 					}
 				}
 			}
+			checkFloorMeteorsCol();
 		}
 
 		void InitMeteors()

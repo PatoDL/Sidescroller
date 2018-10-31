@@ -15,7 +15,7 @@ namespace app
 	namespace spaceship
 	{
 		extern const int shipMaxShoots = 10;
-		const int shipMaxBombs = 10;
+		extern const int shipMaxBombs = 10;
 		static int nextBomb = 1;
 		Bomb bombs[shipMaxBombs];
 		Spaceship ship;
