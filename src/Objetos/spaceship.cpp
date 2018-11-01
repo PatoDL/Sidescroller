@@ -227,7 +227,7 @@ namespace app
 			{
 				ship.position.y += GetFrameTime() * shipSpeed;
 			}
-
+		
 			bombsInputCheck();
 		}
 

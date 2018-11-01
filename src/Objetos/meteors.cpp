@@ -14,13 +14,24 @@ namespace app
 {
 	namespace meteors
 	{
+		struct Canon
+		{
+			Rectangle rec;
+			Vector2 position;
+			float angle;
+			Shoot shoot;
+		};
+
 		static const int maxBigMeteors = 6;
+		static const int maxFloorMeteors = 1;
 		
 
 		static Meteor bigMeteor[maxBigMeteors];
 
-		static Meteor floorMeteors[maxBigMeteors];
-	
+		static Meteor floorMeteors[maxFloorMeteors];
+
+		static Canon canons[maxFloorMeteors];
+
 		static int destroyedMeteorsCount;
 		static float meteorSpeed;
 		static const float speedBoost = 100.0f; //variable para que la velocidad se ajuste al GetFrameTime
@@ -45,24 +56,32 @@ namespace app
 		static int scaleAux = 1600;
 		static void initFloorMeteors();
 		static void updateFloorMeteors();
-		static const float floorMeteorsDistance = 400.0f;
+		static const float floorMeteorsDistance = 400 * 6 / maxFloorMeteors;
 
-		void initFloorMeteors()
+		static void initFloorMeteors()
 		{
 			floorMeteors[0].position = { (float)GetScreenWidth() / 6 * 4, (float)GetScreenHeight() / 6 * 5 };
-			for (int i = 0; i < maxBigMeteors; i++)
+			for (int i = 0; i < maxFloorMeteors; i++)
 			{
 				floorMeteors[i].active = true;
 				floorMeteors[i].radius = 50.0f;
 				floorMeteors[i].color = RED;
-				floorMeteors[i].speed = { 100.0f,0.0f };
+				floorMeteors[i].speed = { 100.0f * 6 / maxFloorMeteors,0.0f };
 				if (i != 0)
 				{
-					floorMeteors[i].position = { floorMeteors[i-1].position.x + floorMeteorsDistance,(float)GetScreenHeight() / 6 * 5 };
+					floorMeteors[i].position = { floorMeteors[i - 1].position.x + floorMeteorsDistance,(float)GetScreenHeight() / 6 * 5 };
 				}
 				floorMeteors[i].tag = i;
+				//-----------------------------------
+				canons[i].position.x = floorMeteors[i].position.x;
+				canons[i].position.y = floorMeteors[i].position.y - floorMeteors[i].radius / 2;
+
+				canons[i].rec.x = canons[i].position.x - 6;
+				canons[i].rec.y = canons[i].position.y;
+				canons[i].rec.width = floorMeteors[i].radius * 2 / 3;
+				canons[i].rec.height = 12;
+				canons[i].angle = 90;
 			}
-			
 		}
 
 		static int lastMeteorX;
@@ -71,7 +90,7 @@ namespace app
 		{
 			for (int i = 0; i < shipMaxBombs; i++)
 			{
-				for (int j = 0; j < maxBigMeteors; j++)
+				for (int j = 0; j < maxFloorMeteors; j++)
 				{
 					if (CheckCollisionCircles(bombs[i].position, bombs[i].radius, floorMeteors[j].position, floorMeteors[j].radius))
 					{
@@ -85,7 +104,7 @@ namespace app
 		static void checkLastMeteor()
 		{
 			lastMeteorX = 0;
-			for (int k = 0; k < maxBigMeteors; k++)
+			for (int k = 0; k < maxFloorMeteors; k++)
 			{
 				if (floorMeteors[k].position.x > lastMeteorX)
 				{
@@ -94,18 +113,25 @@ namespace app
 			}
 		}
 
-		void updateFloorMeteors()
+		static void updateFloorMeteors()
 		{
-			for (int i = 0; i < maxBigMeteors; i++)
+			for (int i = 0; i < maxFloorMeteors; i++)
 			{
 				if (floorMeteors[i].active)
 				{
 					floorMeteors[i].position.x -= floorMeteors[i].speed.x*GetFrameTime();
 					if (floorMeteors[i].position.x < -floorMeteors[i].radius * 2)
 					{
-						checkLastMeteor();
-						floorMeteors[i].position.x = lastMeteorX + floorMeteorsDistance;
+						/*checkLastMeteor();
+						floorMeteors[i].position.x = lastMeteorX + floorMeteorsDistance;*/
+						floorMeteors[i].position.x = GetScreenWidth() + floorMeteors[i].radius * 2;
 					}
+					//--------------------------------------
+					canons[i].position.x = floorMeteors[i].position.x;
+					canons[i].position.y = floorMeteors[i].position.y - floorMeteors[i].radius / 2;
+
+					canons[i].rec.x = canons[i].position.x - 6;
+					canons[i].rec.y = canons[i].position.y;
 				}
 			}
 			checkFloorMeteorsCol();
@@ -236,7 +262,10 @@ namespace app
 				currentScreen = GameOver;
 			}
 
-			updateFloorMeteors();
+			if (floorMeteors[0].position.x > 100)
+			{
+				updateFloorMeteors();
+			}
 		}
 
 		void DrawMeteors()
@@ -249,10 +278,14 @@ namespace app
 					DrawTextureEx(meteorTexture, { bigMeteor[i].position.x - bigMeteorScalePos.x,bigMeteor[i].position.y - bigMeteorScalePos.y }, 0, bigMeteorScale, WHITE);
 				}
 				else DrawCircleV(bigMeteor[i].position, bigMeteor[i].radius, BLANK);
+			}
 
+			for (int i = 0; i < maxFloorMeteors; i++)
+			{
 				if (floorMeteors[i].active)
 				{
 					DrawCircleV(floorMeteors[i].position, floorMeteors[i].radius, floorMeteors[i].color);
+					DrawRectanglePro(canons[i].rec, { canons[i].position.x ,canons[i].position.y }, canons[i].angle, WHITE);
 				}
 			}
 		}

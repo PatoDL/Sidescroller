@@ -7,6 +7,7 @@ namespace app
 {
 	namespace meteors
 	{
+
 		struct Meteor
 		{
 			Vector2 position;
