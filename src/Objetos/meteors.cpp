@@ -122,9 +122,8 @@ namespace app
 					floorMeteors[i].position.x -= floorMeteors[i].speed.x*GetFrameTime();
 					if (floorMeteors[i].position.x < -floorMeteors[i].radius * 2)
 					{
-						/*checkLastMeteor();
-						floorMeteors[i].position.x = lastMeteorX + floorMeteorsDistance;*/
-						floorMeteors[i].position.x = GetScreenWidth() + floorMeteors[i].radius * 2;
+						checkLastMeteor();
+						floorMeteors[i].position.x = lastMeteorX + floorMeteorsDistance;
 					}
 					//--------------------------------------
 					canons[i].position.x = floorMeteors[i].position.x;
@@ -285,7 +284,7 @@ namespace app
 				if (floorMeteors[i].active)
 				{
 					DrawCircleV(floorMeteors[i].position, floorMeteors[i].radius, floorMeteors[i].color);
-					DrawRectanglePro(canons[i].rec, { canons[i].position.x ,canons[i].position.y }, canons[i].angle, WHITE);
+					DrawRectanglePro(canons[i].rec, {0.0f,0.0f}, canons[i].angle, WHITE);
 				}
 			}
 		}
