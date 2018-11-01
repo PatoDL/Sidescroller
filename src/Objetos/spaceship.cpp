@@ -235,7 +235,6 @@ namespace app
 
 		void Update()
 		{
-
 			if (!gameOver)
 			{
 				framesCounter += GetFrameTime();

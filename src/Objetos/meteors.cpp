@@ -23,7 +23,7 @@ namespace app
 		};
 
 		static const int maxBigMeteors = 6;
-		static const int maxFloorMeteors = 1;
+		static const int maxFloorMeteors = 5;
 		
 
 		static Meteor bigMeteor[maxBigMeteors];
@@ -56,6 +56,7 @@ namespace app
 		static int scaleAux = 1600;
 		static void initFloorMeteors();
 		static void updateFloorMeteors();
+		static void drawFloorMeteors();
 		static const float floorMeteorsDistance = 400 * 6 / maxFloorMeteors;
 
 		static void initFloorMeteors()
@@ -73,14 +74,12 @@ namespace app
 				}
 				floorMeteors[i].tag = i;
 				//-----------------------------------
-				canons[i].position.x = floorMeteors[i].position.x;
-				canons[i].position.y = floorMeteors[i].position.y - floorMeteors[i].radius / 2;
 
-				canons[i].rec.x = canons[i].position.x - 6;
-				canons[i].rec.y = canons[i].position.y;
-				canons[i].rec.width = floorMeteors[i].radius * 2 / 3;
-				canons[i].rec.height = 12;
-				canons[i].angle = 90;
+				canons[i].rec.x = floorMeteors[i].position.x;
+				canons[i].rec.y = floorMeteors[i].position.y;
+				canons[i].rec.width = floorMeteors[i].radius*3/2;
+				canons[i].rec.height = 24;
+				canons[i].angle = -90;
 			}
 		}
 
@@ -112,7 +111,8 @@ namespace app
 				}
 			}
 		}
-
+		Vector2 vDireccion;
+		Vector2 vAyuda;
 		static void updateFloorMeteors()
 		{
 			for (int i = 0; i < maxFloorMeteors; i++)
@@ -126,14 +126,29 @@ namespace app
 						floorMeteors[i].position.x = lastMeteorX + floorMeteorsDistance;
 					}
 					//--------------------------------------
-					canons[i].position.x = floorMeteors[i].position.x;
-					canons[i].position.y = floorMeteors[i].position.y - floorMeteors[i].radius / 2;
+					canons[i].rec.x = floorMeteors[i].position.x;
+					canons[i].rec.y = floorMeteors[i].position.y;
 
-					canons[i].rec.x = canons[i].position.x - 6;
-					canons[i].rec.y = canons[i].position.y;
+					vDireccion.x = ship.position.x-canons[i].rec.x;
+
+					vDireccion.y = ship.position.y-canons[i].rec.y;
+
+					canons[i].angle = atan2(vDireccion.y, vDireccion.x)*RAD2DEG;
 				}
 			}
 			checkFloorMeteorsCol();
+		}
+
+		static void drawFloorMeteors()
+		{
+			for (int i = 0; i < maxFloorMeteors; i++)
+			{
+				if (floorMeteors[i].active)
+				{
+					DrawCircleV(floorMeteors[i].position, floorMeteors[i].radius, floorMeteors[i].color);
+					DrawRectanglePro(canons[i].rec, { 0.0f,canons[i].rec.height/2 }, canons[i].angle, WHITE);
+				}
+			}
 		}
 
 		void InitMeteors()
@@ -261,10 +276,9 @@ namespace app
 				currentScreen = GameOver;
 			}
 
-			if (floorMeteors[0].position.x > 100)
-			{
-				updateFloorMeteors();
-			}
+			
+			updateFloorMeteors();
+			
 		}
 
 		void DrawMeteors()
@@ -278,15 +292,7 @@ namespace app
 				}
 				else DrawCircleV(bigMeteor[i].position, bigMeteor[i].radius, BLANK);
 			}
-
-			for (int i = 0; i < maxFloorMeteors; i++)
-			{
-				if (floorMeteors[i].active)
-				{
-					DrawCircleV(floorMeteors[i].position, floorMeteors[i].radius, floorMeteors[i].color);
-					DrawRectanglePro(canons[i].rec, {0.0f,0.0f}, canons[i].angle, WHITE);
-				}
-			}
+			drawFloorMeteors();
 		}
 
 		void UnloadMeteors()
