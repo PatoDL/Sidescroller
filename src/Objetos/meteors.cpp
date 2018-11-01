@@ -20,17 +20,19 @@ namespace app
 			Vector2 position;
 			float angle;
 			Shoot shoot;
+			float timer;
+			float shootSpeed;
+			float shootDirection;
 		};
 
 		static const int maxBigMeteors = 6;
-		static const int maxFloorMeteors = 5;
-		
-
 		static Meteor bigMeteor[maxBigMeteors];
 
+		static const int maxFloorMeteors = 5;
 		static Meteor floorMeteors[maxFloorMeteors];
-
 		static Canon canons[maxFloorMeteors];
+		Texture2D spriteFM; //floor meteors
+		Texture2D spriteFMS; //floor meteors shoot
 
 		static int destroyedMeteorsCount;
 		static float meteorSpeed;
@@ -80,6 +82,16 @@ namespace app
 				canons[i].rec.width = floorMeteors[i].radius*3/2;
 				canons[i].rec.height = 24;
 				canons[i].angle = -90;
+
+				spriteFM = LoadTexture("res/assets/machines.png");
+				spriteFMS = LoadTexture("res/assets/shoot.png");
+
+				canons[i].timer = 0.0f;
+				canons[i].shoot.active = false;
+				canons[i].shoot.position.x = canons[i].rec.x;
+				canons[i].shoot.position.y = canons[i].rec.y;
+				canons[i].shoot.rotation = canons[i].angle;
+				canons[i].shootSpeed = 200.0f;
 			}
 		}
 
@@ -111,8 +123,7 @@ namespace app
 				}
 			}
 		}
-		Vector2 vDireccion;
-		Vector2 vAyuda;
+		Vector2 vDirection;
 		static void updateFloorMeteors()
 		{
 			for (int i = 0; i < maxFloorMeteors; i++)
@@ -129,11 +140,39 @@ namespace app
 					canons[i].rec.x = floorMeteors[i].position.x;
 					canons[i].rec.y = floorMeteors[i].position.y;
 
-					vDireccion.x = ship.position.x-canons[i].rec.x;
+					vDirection.x = ship.position.x-canons[i].rec.x;
 
-					vDireccion.y = ship.position.y-canons[i].rec.y;
+					vDirection.y = ship.position.y-canons[i].rec.y;
 
-					canons[i].angle = atan2(vDireccion.y, vDireccion.x)*RAD2DEG;
+					canons[i].angle = atan2(vDirection.y, vDirection.x)*RAD2DEG;
+					//----------------------------------------
+
+					canons[i].shoot.rotation = canons[i].angle;
+					if (!canons[i].shoot.active)
+					{
+						canons[i].timer += GetFrameTime();
+					}
+					if (canons[i].timer > 3)
+					{
+						canons[i].shoot.active = true;
+						canons[i].timer = 0;
+					}
+					if (!canons[i].shoot.active)
+					{
+						canons[i].shootDirection = canons[i].shoot.rotation+77.5;
+						canons[i].shoot.position.x = canons[i].rec.x;
+						canons[i].shoot.position.y = canons[i].rec.y;
+					}
+					else
+					{
+						canons[i].shoot.position.x += sin(canons[i].shootDirection*DEG2RAD)*canons[i].shootSpeed*GetFrameTime();
+						canons[i].shoot.position.y -= cos(canons[i].shootDirection*DEG2RAD)*canons[i].shootSpeed*GetFrameTime();
+					}
+					if (canons[i].shoot.position.x<0 || canons[i].shoot.position.x>GetScreenWidth() ||
+						canons[i].shoot.position.y<0 || canons[i].shoot.position.y>GetScreenHeight())
+					{
+						canons[i].shoot.active = false;
+					}
 				}
 			}
 			checkFloorMeteorsCol();
@@ -145,8 +184,14 @@ namespace app
 			{
 				if (floorMeteors[i].active)
 				{
-					DrawCircleV(floorMeteors[i].position, floorMeteors[i].radius, floorMeteors[i].color);
-					DrawRectanglePro(canons[i].rec, { 0.0f,canons[i].rec.height/2 }, canons[i].angle, WHITE);
+					DrawTexturePro(spriteFM, { 0.0f,0.0f,(float)spriteFM.width / 2,(float)spriteFM.height },
+						{ floorMeteors[i].position.x,floorMeteors[i].position.y,(float)spriteFM.width/2,(float)spriteFM.height },
+						{ (float)spriteFM.width / 4,(float)spriteFM.height / 2 }, 0.0f, WHITE);
+					DrawTexturePro(spriteFM, { (float)spriteFM.width / 2,0.0f,(float)spriteFM.width / 2,(float)spriteFM.height },
+						{floorMeteors[i].position.x,floorMeteors[i].position.y,(float)spriteFM.width/4,(float)spriteFM.height /2},
+						{ 0.0f, (float)spriteFM.height / 4 }, canons[i].angle, WHITE);
+					DrawTexture(spriteFMS, canons[i].shoot.position.x - spriteFMS.width / 2,
+						canons[i].shoot.position.y - spriteFMS.height / 2, WHITE);
 				}
 			}
 		}
