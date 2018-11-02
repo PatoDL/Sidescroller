@@ -6,12 +6,17 @@
 ## Descripcion:
 Juego basado en Gradius, popular videojuego de arcade. Gradius es un matamarcianos lanzado por Konami en 1985.
 
+##Version 1.1 Lanzada!
+
+agregamos las bombas y las maquinas que no dejan de apuntar al personaje para destruirlo de un bombazo. Esperamos les guste.
+
+![4](screenshots/ss4.jpg)
+
 ## Screenshot:
 
 ![1](screenshots/ss1.png)
 ![2](screenshots/ss2.png)
 ![3](screenshots/ss3.png)
-
 
 ## Musica: 
 - Realizada con BoscaCeoil.
@@ -28,7 +33,15 @@ Juego basado en Gradius, popular videojuego de arcade. Gradius es un matamarcian
 
 ## Autor: 
 - Mariano Martinez.
+## Colaborador:
+- PatoDL
 
 ## Contacto: 
+### Mariano:
 - mariano_mcr92@hotmail.com
 - marianomcr92@gmail.com
+
+### Pato:
+- github.com/PatoDL
+- patodl.itch.io
+- ig: @pato.dl

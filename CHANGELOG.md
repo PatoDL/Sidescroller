@@ -1,9 +1,9 @@
 # Changelog
 
-## [unreleased] 2018-10-30
+## [1.1] 2018-11-1
 ### Added
-- se agregaron las bombas como forma de ataque
-- se agregaron nuevos enemigos
+- se agregaron las bombas como forma de ataque que solo afecta a las maquinas
+- se agregaron nuevos enemigos "maquinas" que solo pueden ser destruidos con las bombas
 
 ## [1.0] 2018-10-29
 ### Added
