@@ -153,7 +153,7 @@ namespace app
 			ship.acceleration = { 0, 0 };
 			ship.speed = { 0, 0 };
 			ship.rotation = 90;
-			ship.collider = { ship.position.x + shipHeight * 1.5f , ship.position.y+shipHeight, shipColliderZ };
+			ship.collider = { ship.position.x , ship.position.y, shipColliderZ };
 			ship.color = LIGHTGRAY;
 
 			frameRec = { 0.0f, 0.0f, (float)shipTexture.width, (float)shipTexture.height/4 };
