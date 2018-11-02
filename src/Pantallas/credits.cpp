@@ -18,7 +18,7 @@ namespace app
 		static char text2[] = "Musica realizada con Bosca Ceoil";
 		static char text3[] = "Creado por Mariano Martinez";
 		static char text4[] = "MENU";
-		static char text5[] = "GRAD10S V 1.0";
+		static char text5[] = "GRAD10S V 1.1";
 		static char text6[] = "Sonidos realizados con Bfxr";
 		static char text7[] = "Imagenes y assets:";
 		static char text8[] = "-'[M13] Cave Tileset', Autor: Beast, https://opengameart.org/content/m13-cave-tileset";
