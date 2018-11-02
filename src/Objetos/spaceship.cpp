@@ -97,6 +97,11 @@ namespace app
 						bombs[i].position.x += bombs[i].speed.x*GetFrameTime();
 						bombs[i].position.y += bombs[i].speed.y*GetFrameTime();
 					}
+
+					if (bombs[i].position.x > GetScreenWidth())
+					{
+						bombs[i].active = false;
+					}
 				}
 			}
 
@@ -309,7 +314,7 @@ namespace app
 						}
 					}
 				}
-				ship.collider = { ship.position.x+shipHeight*1.5f, ship.position.y+shipHeight, shipColliderZ };
+				ship.collider = { ship.position.x+shipHeight, ship.position.y+shipHeight, shipColliderZ };
 				updateBombs();
 			}
 		}

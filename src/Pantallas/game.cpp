@@ -16,7 +16,7 @@ namespace app
 	{
 		extern bool victory = false;
 		extern bool gameOver = false;
-		static char text[] = "W A S D : movimiento, CLICK IZQ: Disparar";
+		static char text[] = "W A S D : movimiento, CLICK IZQ: Disparar, CLICK DER: Lanzar Bomba";
 		static int sizeText;
 		static float textPositionX;
 		static float textPositionY;
