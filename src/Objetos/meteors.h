@@ -18,6 +18,8 @@ namespace app
 			int tag;
 		};
 
+		extern const int posMachinesY;
+
 		void InitMeteors();
 		void UpdateMeteors();
 		void DrawMeteors();

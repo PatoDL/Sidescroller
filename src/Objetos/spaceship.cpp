@@ -5,6 +5,7 @@
 #include "pause.h"
 #include "game.h"
 #include "app.h"
+#include "meteors.h"
 
 using namespace app;
 using namespace game;
@@ -35,6 +36,7 @@ namespace app
 		static Texture2D shipTexture;
 		static Rectangle sourceRect;
 		static Rectangle destRec;
+		static Texture2D bombsT;
 
 		//Escala las texturas
 		static float shipScale;
@@ -62,8 +64,9 @@ namespace app
 		static void checkBombsCollision();
 		static void drawBombs();
 
-		void initBombs()
+		static void initBombs()
 		{
+			bombsT = LoadTexture("res/assets/bomb.png");
 			for (int i = 0; i < shipMaxBombs; i++)
 			{
 				bombs[i].active = false;
@@ -75,7 +78,7 @@ namespace app
 			}
 		}
 
-		void updateBombs()
+		static void updateBombs()
 		{
 			for (int i = 0; i < shipMaxBombs; i++)
 			{
@@ -85,8 +88,15 @@ namespace app
 				}
 				else
 				{
-					bombs[i].position.x += bombs[i].speed.x*GetFrameTime();
-					bombs[i].position.y += bombs[i].speed.y*GetFrameTime();
+					if (bombs[i].position.y >= meteors::posMachinesY)
+					{
+						bombs[i].position.x+= bombs[i].speed.x*2*GetFrameTime();
+					}
+					else
+					{
+						bombs[i].position.x += bombs[i].speed.x*GetFrameTime();
+						bombs[i].position.y += bombs[i].speed.y*GetFrameTime();
+					}
 				}
 			}
 
@@ -98,7 +108,7 @@ namespace app
 			}
 		}
 
-		void bombsInputCheck()
+		static void bombsInputCheck()
 		{
 			if (IsMouseButtonReleased(MOUSE_RIGHT_BUTTON))
 			{
@@ -107,7 +117,7 @@ namespace app
 			}
 		}
 
-		void checkBombsCollision()
+		static void checkBombsCollision()
 		{
 			for (int i = 0; i < shipMaxBombs; i++)
 			{
@@ -121,13 +131,13 @@ namespace app
 			}
 		}
 
-		void drawBombs()
+		static void drawBombs()
 		{
 			for (int i = 0; i < shipMaxBombs; i++)
 			{
 				if (bombs[i].active)
 				{
-					DrawCircleV(bombs[i].position, bombs[i].radius, bombs[i].color);
+					DrawTexture(bombsT, bombs[i].position.x - bombsT.width / 2, bombs[i].position.y - bombsT.height / 2, WHITE);
 				}
 			}
 		}
@@ -334,6 +344,7 @@ namespace app
 			UnloadTexture(shootTexture);
 			UnloadImage(shootImage);
 			UnloadImage(shipImage);
+			UnloadTexture(bombsT);
 		}
 
 		void ResetSpaceship()
@@ -374,6 +385,7 @@ namespace app
 
 			destRec.width = shipTexture.width;
 			destRec.height = shipTexture.height;
+			initBombs();
 		}
 	}
 }

@@ -161,10 +161,10 @@ namespace app
 		{
 			ClearBackground(BLANK);
 			DrawTextureRec(backTexture, frameRec, { 0,0 }, WHITE);
+			DrawSpaceship();
 			DrawMeteors();
 			DrawTextureRec(backTexture2, frameRec2, { 0,0 }, WHITE);
 
-			DrawSpaceship();
 
 			DrawRectangleRec(botonPausa1, colorRect);
 			DrawRectangleRec(botonPausa2, colorRect);

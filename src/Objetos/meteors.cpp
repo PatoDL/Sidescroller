@@ -31,8 +31,10 @@ namespace app
 		static const int maxFloorMeteors = 5;
 		static Meteor floorMeteors[maxFloorMeteors];
 		static Canon canons[maxFloorMeteors];
-		Texture2D spriteFM; //floor meteors
-		Texture2D spriteFMS; //floor meteors shoot
+		static Texture2D spriteFM; //floor meteors
+		static Texture2D spriteFMS; //floor meteors shoot
+		static Vector2 vDirection; //determina la direccion del disparo de las maquinas
+		static int destroyedFloorMeteorsCount;
 
 		static int destroyedMeteorsCount;
 		static float meteorSpeed;
@@ -60,10 +62,11 @@ namespace app
 		static void updateFloorMeteors();
 		static void drawFloorMeteors();
 		static const float floorMeteorsDistance = 400 * 6 / maxFloorMeteors;
-		static const int posMachinesY = 695;
+		const int posMachinesY = 695;
 
 		static void initFloorMeteors()
 		{
+			destroyedFloorMeteorsCount = 0;
 			floorMeteors[0].position = { (float)GetScreenWidth() / 6 * 4, posMachinesY };
 			for (int i = 0; i < maxFloorMeteors; i++)
 			{
@@ -105,10 +108,11 @@ namespace app
 			{
 				for (int j = 0; j < maxFloorMeteors; j++)
 				{
-					if (CheckCollisionCircles(bombs[i].position, bombs[i].radius, floorMeteors[j].position, floorMeteors[j].radius))
+					if (CheckCollisionCircles(bombs[i].position, bombs[i].radius, floorMeteors[j].position, floorMeteors[j].radius) && floorMeteors[j].active)
 					{
 						floorMeteors[j].active = false;
 						bombs[i].active = false;
+						destroyedFloorMeteorsCount++;
 					}
 				}
 			}
@@ -128,9 +132,10 @@ namespace app
 
 		static void updateCanonShoots()
 		{
+			int angleFixed = 79;
 			for (int i = 0; i < maxFloorMeteors; i++)
 			{
-				canons[i].shoot.rotation = canons[i].angle + 79;
+				canons[i].shoot.rotation = canons[i].angle + angleFixed;
 
 				if (!canons[i].shoot.active)
 				{
@@ -166,7 +171,6 @@ namespace app
 				}
 			}
 		}
-		Vector2 vDirection;
 		static void updateFloorMeteors()
 		{
 			for (int i = 0; i < maxFloorMeteors; i++)
@@ -333,16 +337,15 @@ namespace app
 				}
 			}
 
-			if (destroyedMeteorsCount == maxBigMeteors)
+			updateFloorMeteors();
+
+			if (destroyedMeteorsCount == maxBigMeteors && destroyedFloorMeteorsCount==maxFloorMeteors)
 			{
 				victory = true;
 				gameOver = true;
 				currentScreen = GameOver;
 			}
 
-			
-			updateFloorMeteors();
-			
 		}
 
 		void DrawMeteors()
@@ -364,6 +367,8 @@ namespace app
 			UnloadSound(explosionSound);
 			UnloadTexture(meteorTexture);
 			UnloadImage(meteorImage);
+			UnloadTexture(spriteFM);
+			UnloadTexture(spriteFMS);
 		}
 
 		void ResetMeteors()
